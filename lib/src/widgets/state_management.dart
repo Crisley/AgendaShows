@@ -1,23 +1,42 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
-import '../controllers/home_controller.dart';
+import '../controllers/show_controller.dart';
 
-class HomePage extends StatefulWidget {
-  const HomePage({super.key});
+class StateManagement extends StatefulWidget {
+  final ShowController controller;
+  const StateManagement(this.controller, {super.key});
 
   @override
-  State<HomePage> createState() => _HomePageState();
+  State<StateManagement> createState() => _StateManagementState();
 }
 
-class _HomePageState extends State<HomePage> {
-  final controller = HomeController();
+class _StateManagementState extends State<StateManagement> {
+  @override
+  Widget build(BuildContext context) {
+    return stateManagement(widget.controller.state.value);
+  }
+
+  stateManagement(ShowState state) {
+    switch (state) {
+      case ShowState.start:
+        return _start();
+      case ShowState.loading:
+        return _loading();
+      case ShowState.success:
+        return _success();
+      case ShowState.error:
+        return _error();
+      default:
+        return _start();
+    }
+  }
 
   _success() {
     return ListView.builder(
-      itemCount: controller.shows.length,
+      itemCount: widget.controller.shows.length,
       itemBuilder: (context, index) {
-        var show = controller.shows[index];
+        var show = widget.controller.shows[index];
         final dateFormat = DateFormat('dd/MM');
         final hourFormat = DateFormat('HH:mm');
         return Center(
@@ -61,7 +80,9 @@ class _HomePageState extends State<HomePage> {
     return Center(
       child: ElevatedButton(
         onPressed: () {
-          controller.start(true);
+          setState(() {
+            widget.controller.start(true);
+          });
         },
         child: const Text("Tentar novamente"),
       ),
@@ -76,43 +97,5 @@ class _HomePageState extends State<HomePage> {
 
   _start() {
     return Container();
-  }
-
-  stateManagement(HomeState state) {
-    switch (state) {
-      case HomeState.start:
-        return _start();
-      case HomeState.loading:
-        return _loading();
-      case HomeState.success:
-        return _success();
-      case HomeState.error:
-        return _error();
-      default:
-        return _start();
-    }
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    controller.start(true);
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-        appBar: AppBar(
-          title: const Text('Shows Integrantes de Narnia'),         
-        ),
-        body: RefreshIndicator(
-          onRefresh: () => controller.start(false),
-          child: AnimatedBuilder(
-            animation: controller.state,
-            builder: (context, child) {
-              return stateManagement(controller.state.value);
-            },
-          ),
-        ));
   }
 }

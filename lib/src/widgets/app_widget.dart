@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../views/home_page.dart';
+import '../views/shows_page.dart';
 
 class AppWidget extends StatelessWidget {
   const AppWidget({super.key});
@@ -11,7 +11,7 @@ class AppWidget extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: "Agenda Integrantes de Nárnia",
       theme: ThemeData(primarySwatch: Colors.deepOrange),
-      home: HomePage(),
+      home: const ShowsPage(),
     );
   }
 }
